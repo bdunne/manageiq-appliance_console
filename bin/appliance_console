@@ -411,6 +411,15 @@ Static Network Configuration
         # Get the region again because it may have changed
         region = ManageIQ::ApplianceConsole::DatabaseConfiguration.region
 
+        queue_options = {
+          "Run queue on this server" => "run_queue",
+          "Use an existing queue"    => "join_queue",
+        }
+
+        action = ask_with_menu("Configure Queue", queue_options)
+
+        ManageIQ::ApplianceConsole::QueueConfiguration.new(:run_queue => action == "run_queue").run_interactive
+
         press_any_key
 
       when I18n.t("advanced_settings.db_replication")
