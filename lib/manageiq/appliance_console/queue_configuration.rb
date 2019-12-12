@@ -4,13 +4,14 @@ require "linux_admin"
 module ManageIQ
   module ApplianceConsole
     class QueueConfiguration
+      include ApplianceConsole::Logging
       QUEUE_YML = ManageIQ::ApplianceConsole::RAILS_ROOT.join("config/queue.yml")
 
-      attr_accessor :disk, :encoding, :host, :password, :port, :protocol, :run_queue, :username
+      attr_accessor :disk, :encoding, :host, :local, :password, :port, :protocol, :username
 
       def initialize(hash = {})
         set_defaults
-        self.run_queue = hash[:run_queue]
+        self.local = hash[:local]
       end
 
       def set_defaults
@@ -41,9 +42,9 @@ module ManageIQ
       end
 
       def ask_for_queue_credentials(password_twice = true)
-        self.host     = ask_for_ip_or_hostname("queue hostname or IP address", host) if host.blank? || !local?
-        self.port     = ask_for_integer("port number", nil, port) unless local?
-        self.username = just_ask("username", username) unless local?
+        self.host     = ask_for_ip_or_hostname("queue hostname or IP address", host) if host.blank? || !local
+        self.port     = ask_for_integer("port number", nil, port) unless local
+        self.username = just_ask("username", username) unless local
         count = 0
         loop do
           password1 = ask_for_password("queue password on #{host}", password)
@@ -81,6 +82,7 @@ module ManageIQ
 
       def activate
         initialize_queue
+        save
         true
       end
 

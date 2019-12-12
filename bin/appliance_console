@@ -383,7 +383,8 @@ Static Network Configuration
           "Create Internal Database"           => "create_internal",
           "Create Region in External Database" => "create_external",
           "Join Region in External Database"   => "join_external",
-          "Reset Configured Database"          => "reset_region"
+          "Reset Configured Database"          => "reset_region",
+          "No changes"                         => "no_changes"
         }
         action = ask_with_menu("Database Operation", options)
 
@@ -418,7 +419,7 @@ Static Network Configuration
 
         action = ask_with_menu("Configure Queue", queue_options)
 
-        ManageIQ::ApplianceConsole::QueueConfiguration.new(:run_queue => action == "run_queue").run_interactive
+        ManageIQ::ApplianceConsole::QueueConfiguration.new(:local => action == "run_queue").run_interactive
 
         press_any_key
 
