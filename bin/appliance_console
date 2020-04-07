@@ -413,13 +413,16 @@ Static Network Configuration
         region = ManageIQ::ApplianceConsole::DatabaseConfiguration.region
 
         queue_options = {
-          "Run queue on this server" => "run_queue",
-          "Use an existing queue"    => "join_queue",
+          "Use an external queue" => "external_queue",
+          "No changes"            => "no_changes"
         }
 
         action = ask_with_menu("Configure Queue", queue_options)
 
-        ManageIQ::ApplianceConsole::QueueConfiguration.new(:local => action == "run_queue").run_interactive
+        case action
+        when "external_queue"
+          ManageIQ::ApplianceConsole::QueueConfiguration.new.run_interactive
+        end
 
         press_any_key
 
